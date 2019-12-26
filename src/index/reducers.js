@@ -7,7 +7,6 @@ import {
     ACTION_SET_ISDATESELECTORVISIBLE,
     ACTION_SET_ISLOADINGCITYDATA,
     ACTION_SET_TO,
-    A
 } from './actions'
 
 export default { 

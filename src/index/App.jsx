@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import React from 'react';
+import React,{useCallback} from 'react';
 import './App.css';
 
 import Header from '../common/Header';
@@ -9,9 +9,16 @@ import Journey from './Journey';
 import Submit from './Submit'
 
 function App(props){
+
+  const onBack = useCallback(() => {
+    window.history.back();
+  },[])
+
   return(
     <div>
-      <Header/>
+      <div className="header-wrapper">
+        <Header title="火车票" onBack={onBack}/>
+      </div>
       <Journey/>
       <DepartDate/>
       <HighSpeed/>
