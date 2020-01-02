@@ -98,3 +98,42 @@ export function exchangeFromTo() {
         dispatch(setTo(from))
     }
 }
+
+export function fetchCityData() {
+    return (dispatch,getState) => {
+        const {IsLoadingCityData} = getState();
+        if(IsLoadingCityData){
+            return
+        }
+        dispatch(setIsLoadingCityData(true));
+        const cache = JSON.parse(localStorage.getItem('city_data_cache')|| '{}') 
+
+        if(Date.now() < cache.expires){
+            dispatch(setCityData(cache.data));
+            return
+        }
+
+        fetch('/rest/cities?'+Date.now(),{method:'GET',mode:'cors'})
+            .then(res=>{
+                console.log(res)
+                return res.json()}
+                )
+            .then(cityData => {
+                console.log('dispatch',cityData)
+                    dispatch(setCityData(cityData));
+
+                    localStorage.setItem(
+                        'city_data_cache',
+                        JSON.stringify({
+                            expires:Date.now() + 60 *1000,
+                            data:cityData
+                        })
+                    )
+
+                    dispatch(setIsLoadingCityData(false))
+            })
+            .catch(e=>{
+                dispatch(setIsLoadingCityData(false))
+            })
+    }
+}
