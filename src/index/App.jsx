@@ -14,6 +14,7 @@ import {
   showCitySelector,
   hideCitySelector,
   fetchCityData,
+  setSelectedCity
 } from './actions'
 
 function App(props){
@@ -28,7 +29,9 @@ function App(props){
   })
   const citySelectorCbs = useMemo(()=>{
     return bindActionCreators({
-      onBack:hideCitySelector,fetchCityData
+      onBack:hideCitySelector,
+      fetchCityData,
+      onSelect:setSelectedCity
     },dispatch)
   },[])
   return(
@@ -55,14 +58,11 @@ function App(props){
     </div>
   )
 }
-
-const mapStateToProps = (state) => {
-  return state
-}
-const mapDispatchToProps = (dispatch) => {
-  return{dispatch}
-}
-
 export default connect(
-  mapStateToProps,mapDispatchToProps
-)(App)
+  function mapStateToProps(state) {
+      return state;
+  },
+  function mapDispatchToProps(dispatch) {
+      return { dispatch };
+  }
+)(App);

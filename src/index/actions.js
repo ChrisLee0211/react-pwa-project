@@ -75,6 +75,8 @@ export function setSelectedCity(city) {
         }else{
             dispatch(setTo(city))
         }
+
+        dispatch(hideCitySelector())
     }
 }
 
