@@ -10,7 +10,7 @@ export default function DepartDate(props){
         time,
         onClick,
     } = props
-    console.log(time)
+
     const h0OfDepart = h0(time);
     const departDate = new Date(h0OfDepart);
 

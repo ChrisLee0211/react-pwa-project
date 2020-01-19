@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import React,{useCallback,useMemo} from 'react';
 import {bindActionCreators} from 'redux'
+import {h0} from '../common/fp'
 import './App.css';
 
 import Header from '../common/Header';
@@ -17,7 +18,8 @@ import {
   fetchCityData,
   showDateSelector,
   setSelectedCity,
-  hideDateSelector
+  hideDateSelector,
+  setDepartDate
 } from './actions'
 
 function App(props){
@@ -31,7 +33,6 @@ function App(props){
     departDate,
     isDateSelectorVisible
   } = props
-  console.log(departDate)
   const onBack = useCallback(() => {
     window.history.back();
   },[])
@@ -58,6 +59,18 @@ function App(props){
     return bindActionCreators({
       onBack:hideDateSelector
     },dispatch)
+  },[])
+
+  const onSelectDate = useCallback((day) => {
+    if(!day) {
+      return
+    }
+    if(day<h0() ){
+      return
+    }
+
+    dispatch(setDepartDate(day))
+    dispatch(hideDateSelector())
   },[])
 
   return(
@@ -87,6 +100,7 @@ function App(props){
       <DateSelector 
         show={isDateSelectorVisible}
         {...dateSelectorCbs}
+        onSelect={onSelectDate}
       />
     </div>
   )
