@@ -146,46 +146,61 @@ module.exports = function(webpackEnv) {
       : isEnvDevelopment && 'cheap-module-source-map',
     // These are the "entry points" to our application.
     // This means they will be the "root" imports that are included in JS bundle.
-    entry:{
-      index:[paths.appIndexJs, isEnvDevelopment && require.resolve('react-dev-utils/webpackHotDevClient')].filter(Boolean),
-      query:[paths.appQueryJs, isEnvDevelopment && require.resolve('react-dev-utils/webpackHotDevClient')].filter(Boolean),
-      ticket:[paths.appTicketJs, isEnvDevelopment && require.resolve('react-dev-utils/webpackHotDevClient')].filter(Boolean),
-      order:[paths.appOrderJs, isEnvDevelopment && require.resolve('react-dev-utils/webpackHotDevClient')].filter(Boolean)
-    },
-    output: {
-      // The build folder.
-      path: isEnvProduction ? paths.appBuild : undefined,
-      // Add /* filename */ comments to generated require()s in the output.
-      pathinfo: isEnvDevelopment,
-      // There will be one main bundle, and one file per asynchronous chunk.
-      // In development, it does not produce real files.
-      filename: isEnvProduction
-        ? 'static/js/[name].[contenthash:8].js'
+    entry: {
+      index: [
+          paths.appIndexJs,
+          isEnvDevelopment &&
+              require.resolve('react-dev-utils/webpackHotDevClient'),
+      ].filter(Boolean),
+      query: [
+          paths.appQueryJs,
+          isEnvDevelopment &&
+              require.resolve('react-dev-utils/webpackHotDevClient'),
+      ].filter(Boolean),
+      ticket: [
+          paths.appTicketJs,
+          isEnvDevelopment &&
+              require.resolve('react-dev-utils/webpackHotDevClient'),
+      ].filter(Boolean),
+      order: [
+          paths.appOrderJs,
+          isEnvDevelopment &&
+              require.resolve('react-dev-utils/webpackHotDevClient'),
+      ].filter(Boolean),
+  },
+  output: {
+    // The build folder.
+    path: isEnvProduction ? paths.appBuild : undefined,
+    // Add /* filename */ comments to generated require()s in the output.
+    pathinfo: isEnvDevelopment,
+    // There will be one main bundle, and one file per asynchronous chunk.
+    // In development, it does not produce real files.
+    filename: isEnvProduction
+        ? 'static/js/[name].[chunkhash:8].js'
         : isEnvDevelopment && 'static/js/[name].js',
-      // TODO: remove this when upgrading to webpack 5
-      futureEmitAssets: true,
-      // There are also additional JS chunk files if you use code splitting.
-      chunkFilename: isEnvProduction
-        ? 'static/js/[name].[contenthash:8].chunk.js'
+    // There are also additional JS chunk files if you use code splitting.
+    chunkFilename: isEnvProduction
+        ? 'static/js/[name].[chunkhash:8].chunk.js'
         : isEnvDevelopment && 'static/js/[name].chunk.js',
-      // We inferred the "public path" (such as / or /my-project) from homepage.
-      // We use "/" in development.
-      publicPath: publicPath,
-      // Point sourcemap entries to original disk location (format as URL on Windows)
-      devtoolModuleFilenameTemplate: isEnvProduction
+    // We inferred the "public path" (such as / or /my-project) from homepage.
+    // We use "/" in development.
+    publicPath:
+        'production' !== process.env.NODE_ENV ||
+        'true' === process.env.USE_LOCAL_FILES
+            ? '/'
+            : 'https://www.cdn.com/',
+    // Point sourcemap entries to original disk location (format as URL on Windows)
+    devtoolModuleFilenameTemplate: isEnvProduction
         ? info =>
-            path
-              .relative(paths.appSrc, info.absoluteResourcePath)
-              .replace(/\\/g, '/')
+              path
+                  .relative(paths.appSrc, info.absoluteResourcePath)
+                  .replace(/\\/g, '/')
         : isEnvDevelopment &&
-          (info => path.resolve(info.absoluteResourcePath).replace(/\\/g, '/')),
-      // Prevents conflicts when multiple Webpack runtimes (from different apps)
-      // are used on the same page.
-      jsonpFunction: `webpackJsonp${appPackageJson.name}`,
-      // this defaults to 'window', but by setting it to 'this' then
-      // module chunks which are built will work in web workers as well.
-      globalObject: 'this',
-    },
+          (info =>
+              path
+                  .resolve(info.absoluteResourcePath)
+                  .replace(/\\/g, '/')),
+},
     optimization: {
       minimize: isEnvProduction,
       minimizer: [
@@ -533,7 +548,7 @@ module.exports = function(webpackEnv) {
             inject: true,
             template: paths.appOrderHtml,
             filename: 'order.html',
-            chunks:['index']
+            chunks:['order']
           },
           isEnvProduction
             ? {
@@ -560,7 +575,7 @@ module.exports = function(webpackEnv) {
             inject: true,
             template: paths.appQueryHtml,
             filename: 'query.html',
-            chunks:['index']
+            chunks:['query']
           },
           isEnvProduction
             ? {
@@ -587,7 +602,7 @@ module.exports = function(webpackEnv) {
             inject: true,
             template: paths.appTicketHtml,
             filename: 'ticket.html',
-            chunks:['index']
+            chunks:['ticket']
           },
           isEnvProduction
             ? {
