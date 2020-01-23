@@ -6,6 +6,7 @@ import Header from '../common/Header';
 import Nav from '../common/Nav';
 import List from './List';
 import Bottom from './Bottom'
+import useNav from '../common/useNav';
 
 import {
   setFrom,
@@ -17,7 +18,9 @@ import {
   setTicketTypes,
   setTrainTypes,
   setDepartStations,
-  setArriveStations
+  setArriveStations,
+  prevDate,
+  nextDate
 } from './actions'
 import { h0 } from '../common/fp'
 
@@ -131,6 +134,12 @@ function App(props) {
     window.history.back()
   }, [])
 
+  const {isNextDisabled,isPrevDisabled,prev,next} = useNav(departDate,dispatch,prevDate,nextDate);
+
+  if (!searchParsed) {
+    return null
+  }
+
   return (
     <div>
       <div className="header-wrapper">
@@ -139,7 +148,13 @@ function App(props) {
           onBack={onBack}
         />
       </div>
-      <Nav />
+      <Nav
+                date={departDate}
+                isPrevDisabled={isPrevDisabled}
+                isNextDisabled={isNextDisabled}
+                prev={prev}
+                next={next}
+            />
       <List />
       <Bottom />
     </div>
