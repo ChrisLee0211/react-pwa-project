@@ -1,8 +1,184 @@
-import React from 'react';
+import React, { memo, useState, useCallback } from 'react';
 import PropType from 'prop-types';
 import './Bottom.css';
 import { ORDER_DEPART } from './constant';
 import classnames from 'classnames';
+
+const Filter = memo(function Filter(props){
+
+    const {
+        name,
+        checked,
+        value,
+        toggle
+    } = props
+
+    return (
+        <li className={classnames({checked})} onClick={()=>toggle(value)}>
+            {name}
+        </li>
+    )
+})
+
+Filter.propTypes = {
+    name:PropType.string.isRequired,
+    checked:PropType.bool.isRequired,
+    value:PropType.string.isRequired,
+    toggle:PropType.func.isRequired,
+}
+
+const Option = memo(function Option(props){
+    const {
+        title,
+        options,
+        checkedMap,
+        update
+    } = props;
+
+    const toggle = useCallback((value) => {
+        const newCheckedMap = {...checkedMap};
+        console.log('toggle',newCheckedMap)
+        if(value in checkedMap) {
+            delete newCheckedMap[value]
+        }else{
+            newCheckedMap[value] = true
+        }
+
+        update(newCheckedMap)
+    },[checkedMap,update])
+
+    return (
+        <div className="option">
+            <h3>{title}</h3>
+            <ul>
+                {
+                    options.map(option => {
+                       return <Filter 
+                                    key={option.value} 
+                                    {...option} 
+                                    value={option.value}
+                                    checked={option.value in checkedMap} 
+                                    toggle={toggle}/>
+                    })
+                }
+            </ul>
+        </div>
+    )
+})
+
+Option.propTypes = {
+    title:PropType.string.isRequired,
+    options:PropType.array.isRequired,
+    checkedMap:PropType.object.isRequired,
+    update:PropType.func.isRequired,
+}
+
+const ButtomModal = memo(function BottomModal(props) {
+
+    const {
+        ticketTypes,
+        trainTypes,
+        departStations,
+        arriveStations,
+        checkedTicketTypes,
+        checkedTrainTypes,
+        checkedDepartStations,
+        checkedArriveStations,
+        departTimeStart,
+        departTimeEnd,
+        arriveTimeStart,
+        arriveTimeEnd,
+        setCheckedTicketTypes,
+        setCheckedTrainTypes,
+        setCheckedDepartStations,
+        setCheckedArriveStations,
+        setDepartTimeEnd,
+        setDepartTimeStart,
+        setArriveTimeEnd,
+        setArriveTimeStart,
+        toggleIsFilterVisible,
+    } = props;
+
+    const [localCheckedTicketTypes,setLocalCheckedTicketTypes] = useState(()=>{return{...checkedTicketTypes}});
+    const [localCheckedTrainTypes,setLocalCheckedTrainTypes] = useState(()=>{return {...checkedTrainTypes}});
+    const [localCheckedDepartStations,setLocalCheckedDepartStations] = useState(()=>{return{...checkedDepartStations}});
+    const [localCheckedArriveStations,setLocalCheckedArriveStations] = useState(()=>{return{...checkedArriveStations}});
+
+    const optionGroup = [
+        {
+            title: '坐席类型',
+            options:ticketTypes,
+            checkedMap:localCheckedTicketTypes,
+            update:setLocalCheckedTicketTypes
+        },
+        {
+            title: '车次类型',
+            options:trainTypes,
+            checkedMap:localCheckedTrainTypes,
+            update:setLocalCheckedTrainTypes
+        },
+        {
+            title: '出发车站',
+            options:departStations,
+            checkedMap:localCheckedDepartStations,
+            update:setLocalCheckedDepartStations
+        },
+        {
+            title: '到达车站',
+            options:arriveStations,
+            checkedMap:localCheckedArriveStations,
+            update:setLocalCheckedArriveStations
+        }
+    ]
+
+    return (
+        <div className="bottom-modal">
+            <div className="bottom-dialog">
+                <div className="bottom-dialog-content">
+                    <div className="title">
+                        <span className="reset">
+                            重置
+                        </span>
+                        <span className="ok">
+                            确定    
+                        </span>
+                    </div>
+                    <div className="options">
+                        {
+                            optionGroup.map(group => <Option {...group} key={group.title}/>)
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+})
+
+ButtomModal.propTypes = {
+    toggleIsFilterVisible: PropType.func.isRequired,
+    ticketTypes: PropType.array.isRequired,
+    trainTypes: PropType.array.isRequired,
+    departStations: PropType.array.isRequired,
+    arriveStations: PropType.array.isRequired,
+    checkedTicketTypes: PropType.object.isRequired,
+    checkedTrainTypes: PropType.object.isRequired,
+    checkedDepartStations: PropType.object.isRequired,
+    checkedArriveStations: PropType.object.isRequired,
+    departTimeStart: PropType.number.isRequired,
+    departTimeEnd: PropType.number.isRequired,
+    arriveTimeStart: PropType.number.isRequired,
+    arriveTimeEnd: PropType.number.isRequired,
+
+    setCheckedTicketTypes: PropType.func.isRequired,
+    setCheckedTrainTypes: PropType.func.isRequired,
+    setCheckedDepartStations: PropType.func.isRequired,
+    setCheckedArriveStations: PropType.func.isRequired,
+    setDepartTimeEnd: PropType.func.isRequired,
+    setDepartTimeStart: PropType.func.isRequired,
+    setArriveTimeEnd: PropType.func.isRequired,
+    setArriveTimeStart: PropType.func.isRequired,
+}
+
 export default function Bottom(props) {
 
     const {
@@ -13,7 +189,29 @@ export default function Bottom(props) {
         highSpeed,
         orderType,
         onlyTickets,
-        isFiltersVisible
+        isFiltersVisible,
+
+        ticketTypes,
+        trainTypes,
+        departStations,
+        arriveStations,
+        checkedTicketTypes,
+        checkedTrainTypes,
+        checkedDepartStations,
+        checkedArriveStations,
+        departTimeStart,
+        departTimeEnd,
+        arriveTimeStart,
+        arriveTimeEnd,
+
+        setCheckedTicketTypes,
+        setCheckedTrainTypes,
+        setCheckedDepartStations,
+        setCheckedArriveStations,
+        setDepartTimeEnd,
+        setDepartTimeStart,
+        setArriveTimeEnd,
+        setArriveTimeStart
     } = props
 
     return (
@@ -21,32 +219,80 @@ export default function Bottom(props) {
             <div className="bottom-filters">
                 <span className="item" onClick={toggleOrderType}>
                     <i className="icon">&#xf065;</i>
-                    {orderType === ORDER_DEPART?'出发 早➡️晚': '耗时 短➡️长'}
+                    {orderType === ORDER_DEPART ? '出发 早➡晚' : '耗时 短➡长'}
                 </span>
-                <span className={classnames('item',{'item-on':highSpeed})} onClick={toggleHighSpeed}>
-                    <i className="icon">{highSpeed?'\uf43f':'\uf43e'}</i>
+                <span className={classnames('item', { 'item-on': highSpeed })} onClick={toggleHighSpeed}>
+                    <i className="icon">{highSpeed ? '\uf43f' : '\uf43e'}</i>
                     只看高铁动车
                 </span>
-                <span className={classnames('item',{'item-on':onlyTickets})} onClick={toggleOnlyTickets}>
-                    <i className="icon">{onlyTickets?'\uf43d':'\uf43c'}</i>
+                <span className={classnames('item', { 'item-on': onlyTickets })} onClick={toggleOnlyTickets}>
+                    <i className="icon">{onlyTickets ? '\uf43d' : '\uf43c'}</i>
                     只看有票
                 </span>
-                <span className={classnames('item',{'item-on':isFiltersVisible})} onClick={toggleIsFilterVisible}>
+                <span className={classnames('item', { 'item-on': isFiltersVisible })} onClick={toggleIsFilterVisible}>
                     <i className="icon">{'\uf0f7'}</i>
                     综合筛选
                 </span>
             </div>
+            {
+                isFiltersVisible && (
+                    <ButtomModal 
+                        ticketTypes={ticketTypes}
+                        trainTypes={trainTypes}
+                        departStations={departStations}
+                        arriveStations={arriveStations}
+                        checkedTicketTypes={checkedTicketTypes}
+                        checkedTrainTypes={checkedTrainTypes}
+                        checkedDepartStations={checkedDepartStations}
+                        checkedArriveStations={checkedArriveStations}
+                        departTimeStart={departTimeStart}
+                        departTimeEnd={departTimeEnd}
+                        arriveTimeStart={arriveTimeStart}
+                        arriveTimeEnd={arriveTimeEnd}
+                        setCheckedTicketTypes={setCheckedTicketTypes}
+                        setCheckedTrainTypes={setCheckedTrainTypes}
+                        setCheckedDepartStations={setCheckedDepartStations}
+                        setCheckedArriveStations={setCheckedArriveStations}
+                        setDepartTimeEnd={setDepartTimeEnd}
+                        setDepartTimeStart={setDepartTimeStart}
+                        setArriveTimeEnd={setArriveTimeEnd}
+                        setArriveTimeStart={setArriveTimeStart}
+                        toggleIsFilterVisible={toggleIsFilterVisible}
+                    />
+                )
+            }
         </div>
     )
 }
 
 Bottom.propTypes = {
-    toggleHighSpeed:PropType.func.isRequired,
-toggleIsFilterVisible:PropType.func.isRequired,
-toggleOnlyTickets:PropType.func.isRequired,
-toggleOrderType:PropType.func.isRequired,
-highSpeed:PropType.bool.isRequired,
-orderType:PropType.number.isRequired,
-onlyTickets:PropType.bool.isRequired,
-isFiltersVisible:PropType.bool.isRequired,
+    toggleHighSpeed: PropType.func.isRequired,
+    toggleIsFilterVisible: PropType.func.isRequired,
+    toggleOnlyTickets: PropType.func.isRequired,
+    toggleOrderType: PropType.func.isRequired,
+    highSpeed: PropType.bool.isRequired,
+    orderType: PropType.number.isRequired,
+    onlyTickets: PropType.bool.isRequired,
+    isFiltersVisible: PropType.bool.isRequired,
+    ticketTypes: PropType.array.isRequired,
+    trainTypes: PropType.array.isRequired,
+    departStations: PropType.array.isRequired,
+    arriveStations: PropType.array.isRequired,
+    checkedTicketTypes: PropType.object.isRequired,
+    checkedTrainTypes: PropType.object.isRequired,
+    checkedDepartStations: PropType.object.isRequired,
+    checkedArriveStations: PropType.object.isRequired,
+    departTimeStart: PropType.number.isRequired,
+    departTimeEnd: PropType.number.isRequired,
+    arriveTimeStart: PropType.number.isRequired,
+    arriveTimeEnd: PropType.number.isRequired,
+
+    setCheckedTicketTypes: PropType.func.isRequired,
+    setCheckedTrainTypes: PropType.func.isRequired,
+    setCheckedDepartStations: PropType.func.isRequired,
+    setCheckedArriveStations: PropType.func.isRequired,
+    setDepartTimeEnd: PropType.func.isRequired,
+    setDepartTimeStart: PropType.func.isRequired,
+    setArriveTimeEnd: PropType.func.isRequired,
+    setArriveTimeStart: PropType.func.isRequired,
 };

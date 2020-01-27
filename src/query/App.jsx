@@ -21,10 +21,18 @@ import {
   setArriveStations,
   prevDate,
   nextDate,
-  toggleHighSpeed, 
-  toggleIsFilterVisible, 
-  toggleOnlyTickets, 
-  toggleOrderType
+  toggleHighSpeed,
+  toggleIsFilterVisible,
+  toggleOnlyTickets,
+  toggleOrderType,
+  setCheckedTicketTypes,
+  setCheckedTrainTypes,
+  setCheckedDepartStations,
+  setCheckedArriveStations,
+  setDepartTimeEnd,
+  setDepartTimeStart,
+  setArriveTimeEnd,
+  setArriveTimeStart
 } from './actions'
 import { h0 } from '../common/fp'
 
@@ -45,6 +53,10 @@ function App(props) {
     orderType,
     onlyTickets,
     isFiltersVisible,
+    ticketTypes,
+    trainTypes,
+    departStations,
+    arriveStations,
     checkedTicketTypes,
     checkedTrainTypes,
     checkedDepartStations,
@@ -143,14 +155,22 @@ function App(props) {
 
   const { isNextDisabled, isPrevDisabled, prev, next } = useNav(departDate, dispatch, prevDate, nextDate);
 
-  const bottomCbs = useMemo(()=>{
+  const bottomCbs = useMemo(() => {
     return bindActionCreators({
       toggleHighSpeed,
       toggleIsFilterVisible,
       toggleOnlyTickets,
-      toggleOrderType
-    },dispatch)
-  },[])
+      toggleOrderType,
+      setCheckedTicketTypes,
+  setCheckedTrainTypes,
+  setCheckedDepartStations,
+  setCheckedArriveStations,
+  setDepartTimeEnd,
+  setDepartTimeStart,
+  setArriveTimeEnd,
+  setArriveTimeStart
+    }, dispatch)
+  }, [])
 
   if (!searchParsed) {
     return null
@@ -177,6 +197,18 @@ function App(props) {
         orderType={orderType}
         onlyTickets={onlyTickets}
         isFiltersVisible={isFiltersVisible}
+        ticketTypes={ticketTypes}
+        trainTypes={trainTypes}
+        departStations={departStations}
+        arriveStations={arriveStations}
+        checkedTicketTypes={checkedTicketTypes}
+        checkedTrainTypes={checkedTrainTypes}
+        checkedDepartStations={checkedDepartStations}
+        checkedArriveStations={checkedArriveStations}
+        departTimeStart={departTimeStart}
+        departTimeEnd={departTimeEnd}
+        arriveTimeStart={arriveTimeStart}
+        arriveTimeEnd={arriveTimeEnd}
         {...bottomCbs}
       />
     </div>
