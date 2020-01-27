@@ -1,6 +1,6 @@
 import React, { memo, useMemo } from 'react';
 import PropType from 'prop-types';
-import URI from 'urijs';
+import URI from 'urijs'; 
 import './List.css';
 
 const ListItem = memo(function ListItem(props) {

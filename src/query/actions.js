@@ -83,7 +83,7 @@ export function toggleOnlyTickets(){
         const {onlyTickets} = getState();
         dispatch({
             type:ACTION_SET_ONLYTICKETS,
-            payload: onlyTickets
+            payload: !onlyTickets
         })
     }
 }
@@ -159,12 +159,12 @@ export function setArriveTimeEnd(arriveTimeEnd){
         payload: arriveTimeEnd
     }
 }
-export function toggleIsFilterVisible(isFilterVisible){
+export function toggleIsFilterVisible(isFiltersVisible){
     return (dispatch,getState) => {
-        const {isFilterVisible} = getState();
+        const {isFiltersVisible} = getState();
         dispatch({
             type:ACTION_SET_ISFILTERVISIBLE,
-            payload: isFilterVisible
+            payload: !isFiltersVisible
         })
     }
 }

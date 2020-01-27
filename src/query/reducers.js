@@ -214,7 +214,7 @@ arriveTimeEnd(state =24, action) {
 
     return state
 },
-isFilterVisible(state = false, action) {
+isFiltersVisible(state = false, action) {
     const {type,payload} = action;
     switch(type) {
         case ACTION_SET_ISFILTERVISIBLE:

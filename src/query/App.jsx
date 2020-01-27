@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { connect } from 'react-redux';
 import URI from 'urijs';
 import dayjs from 'dayjs';
@@ -20,11 +20,16 @@ import {
   setDepartStations,
   setArriveStations,
   prevDate,
-  nextDate
+  nextDate,
+  toggleHighSpeed, 
+  toggleIsFilterVisible, 
+  toggleOnlyTickets, 
+  toggleOrderType
 } from './actions'
 import { h0 } from '../common/fp'
 
 import './App.css';
+import { bindActionCreators } from '../../../../../../Library/Caches/typescript/3.5/node_modules/redux';
 
 
 function App(props) {
@@ -39,6 +44,7 @@ function App(props) {
     highSpeed,
     orderType,
     onlyTickets,
+    isFiltersVisible,
     checkedTicketTypes,
     checkedTrainTypes,
     checkedDepartStations,
@@ -135,7 +141,16 @@ function App(props) {
     window.history.back()
   }, [])
 
-  const {isNextDisabled,isPrevDisabled,prev,next} = useNav(departDate,dispatch,prevDate,nextDate);
+  const { isNextDisabled, isPrevDisabled, prev, next } = useNav(departDate, dispatch, prevDate, nextDate);
+
+  const bottomCbs = useMemo(()=>{
+    return bindActionCreators({
+      toggleHighSpeed,
+      toggleIsFilterVisible,
+      toggleOnlyTickets,
+      toggleOrderType
+    },dispatch)
+  },[])
 
   if (!searchParsed) {
     return null
@@ -150,14 +165,20 @@ function App(props) {
         />
       </div>
       <Nav
-                date={departDate}
-                isPrevDisabled={isPrevDisabled}
-                isNextDisabled={isNextDisabled}
-                prev={prev}
-                next={next}
-            />
-      <List list={trainList}/>
-      <Bottom />
+        date={departDate}
+        isPrevDisabled={isPrevDisabled}
+        isNextDisabled={isNextDisabled}
+        prev={prev}
+        next={next}
+      />
+      <List list={trainList} />
+      <Bottom
+        highSpeed={highSpeed}
+        orderType={orderType}
+        onlyTickets={onlyTickets}
+        isFiltersVisible={isFiltersVisible}
+        {...bottomCbs}
+      />
     </div>
   )
 }

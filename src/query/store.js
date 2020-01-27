@@ -26,7 +26,7 @@ export default createStore(
      departTimeEnd:24,
      arriveTimeStart:0,
      arriveTimeEnd:24,
-     isFilterVisible:false,
+     isFiltersVisible:false,
      searchParsed:false,
     },
     applyMiddleware(thunk)
