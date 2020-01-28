@@ -1,11 +1,11 @@
-import React, { memo, useState, useCallback } from 'react';
+import React, { memo, useState, useCallback, useMemo } from 'react';
 import PropType from 'prop-types';
 import './Bottom.css';
 import { ORDER_DEPART } from './constant';
 import classnames from 'classnames';
 import Slider from './Slider'
 
-const Filter = memo(function Filter(props){
+const Filter = memo(function Filter(props) {
 
     const {
         name,
@@ -15,20 +15,20 @@ const Filter = memo(function Filter(props){
     } = props
 
     return (
-        <li className={classnames({checked})} onClick={()=>toggle(value)}>
+        <li className={classnames({ checked })} onClick={() => toggle(value)}>
             {name}
         </li>
     )
 })
 
 Filter.propTypes = {
-    name:PropType.string.isRequired,
-    checked:PropType.bool.isRequired,
-    value:PropType.string.isRequired,
-    toggle:PropType.func.isRequired,
+    name: PropType.string.isRequired,
+    checked: PropType.bool.isRequired,
+    value: PropType.string.isRequired,
+    toggle: PropType.func.isRequired,
 }
 
-const Option = memo(function Option(props){
+const Option = memo(function Option(props) {
     const {
         title,
         options,
@@ -37,16 +37,16 @@ const Option = memo(function Option(props){
     } = props;
 
     const toggle = useCallback((value) => {
-        const newCheckedMap = {...checkedMap};
-        console.log('toggle',newCheckedMap)
-        if(value in checkedMap) {
+        const newCheckedMap = { ...checkedMap };
+        console.log('toggle', newCheckedMap)
+        if (value in checkedMap) {
             delete newCheckedMap[value]
-        }else{
+        } else {
             newCheckedMap[value] = true
         }
 
         update(newCheckedMap)
-    },[checkedMap,update])
+    }, [checkedMap, update])
 
     return (
         <div className="option">
@@ -54,12 +54,12 @@ const Option = memo(function Option(props){
             <ul>
                 {
                     options.map(option => {
-                       return <Filter 
-                                    key={option.value} 
-                                    {...option} 
-                                    value={option.value}
-                                    checked={option.value in checkedMap} 
-                                    toggle={toggle}/>
+                        return <Filter
+                            key={option.value}
+                            {...option}
+                            value={option.value}
+                            checked={option.value in checkedMap}
+                            toggle={toggle} />
                     })
                 }
             </ul>
@@ -68,10 +68,10 @@ const Option = memo(function Option(props){
 })
 
 Option.propTypes = {
-    title:PropType.string.isRequired,
-    options:PropType.array.isRequired,
-    checkedMap:PropType.object.isRequired,
-    update:PropType.func.isRequired,
+    title: PropType.string.isRequired,
+    options: PropType.array.isRequired,
+    checkedMap: PropType.object.isRequired,
+    update: PropType.func.isRequired,
 }
 
 const ButtomModal = memo(function BottomModal(props) {
@@ -100,11 +100,11 @@ const ButtomModal = memo(function BottomModal(props) {
         toggleIsFilterVisible,
     } = props;
 
-    const [localCheckedTicketTypes,setLocalCheckedTicketTypes] = useState(()=>{return{...checkedTicketTypes}});
-    const [localCheckedTrainTypes,setLocalCheckedTrainTypes] = useState(()=>{return {...checkedTrainTypes}});
-    const [localCheckedDepartStations,setLocalCheckedDepartStations] = useState(()=>{return{...checkedDepartStations}});
-    const [localCheckedArriveStations,setLocalCheckedArriveStations] = useState(()=>{return{...checkedArriveStations}});
-    
+    const [localCheckedTicketTypes, setLocalCheckedTicketTypes] = useState(() => { return { ...checkedTicketTypes } });
+    const [localCheckedTrainTypes, setLocalCheckedTrainTypes] = useState(() => { return { ...checkedTrainTypes } });
+    const [localCheckedDepartStations, setLocalCheckedDepartStations] = useState(() => { return { ...checkedDepartStations } });
+    const [localCheckedArriveStations, setLocalCheckedArriveStations] = useState(() => { return { ...checkedArriveStations } });
+
     const [localDepartTimeStart, setLocalDepartTimeStart] = useState(departTimeStart);
     const [localDepartTimeEnd, setLocalDepartTimeEnd] = useState(departTimeEnd);
     const [localArriveTimeStart, setLocalArriveTimeStart] = useState(arriveTimeStart);
@@ -113,31 +113,31 @@ const ButtomModal = memo(function BottomModal(props) {
     const optionGroup = [
         {
             title: '坐席类型',
-            options:ticketTypes,
-            checkedMap:localCheckedTicketTypes,
-            update:setLocalCheckedTicketTypes
+            options: ticketTypes,
+            checkedMap: localCheckedTicketTypes,
+            update: setLocalCheckedTicketTypes
         },
         {
             title: '车次类型',
-            options:trainTypes,
-            checkedMap:localCheckedTrainTypes,
-            update:setLocalCheckedTrainTypes
+            options: trainTypes,
+            checkedMap: localCheckedTrainTypes,
+            update: setLocalCheckedTrainTypes
         },
         {
             title: '出发车站',
-            options:departStations,
-            checkedMap:localCheckedDepartStations,
-            update:setLocalCheckedDepartStations
+            options: departStations,
+            checkedMap: localCheckedDepartStations,
+            update: setLocalCheckedDepartStations
         },
         {
             title: '到达车站',
-            options:arriveStations,
-            checkedMap:localCheckedArriveStations,
-            update:setLocalCheckedArriveStations
+            options: arriveStations,
+            checkedMap: localCheckedArriveStations,
+            update: setLocalCheckedArriveStations
         }
     ]
 
-    function sure(){
+    function sure() {
         setCheckedTicketTypes(localCheckedTicketTypes);
         setCheckedTrainTypes(localCheckedTrainTypes);
         setCheckedDepartStations(localCheckedDepartStations);
@@ -152,21 +152,52 @@ const ButtomModal = memo(function BottomModal(props) {
         toggleIsFilterVisible()
     }
 
+    const isResetDisabled = useMemo(()=>{
+        return Object.keys(localCheckedTicketTypes).length === 0 
+        && Object.keys(localCheckedTrainTypes).length ===0 
+        && Object.keys(localCheckedDepartStations).length ===0 
+        && Object.keys(localCheckedArriveStations).length ===0
+        && localDepartTimeStart ===0
+        && localDepartTimeEnd ===24
+        && localArriveTimeStart ===0
+        && localArriveTimeEnd === 24
+    },[localCheckedTicketTypes,
+        localCheckedTrainTypes,
+        localCheckedDepartStations,
+        localCheckedArriveStations,
+        localDepartTimeStart,
+        localDepartTimeEnd,
+        localArriveTimeStart,
+        localArriveTimeEnd])
+
+    function reset() {
+        if(isResetDisabled) return
+        setLocalCheckedTicketTypes({});
+        setLocalCheckedTrainTypes({});
+        setLocalCheckedDepartStations({});
+        setLocalCheckedArriveStations({});
+
+        setLocalDepartTimeStart(0);
+        setLocalDepartTimeEnd(24);
+        setLocalArriveTimeStart(0);
+        setLocalArriveTimeEnd(24)
+    }
+
     return (
         <div className="bottom-modal">
             <div className="bottom-dialog">
                 <div className="bottom-dialog-content">
                     <div className="title">
-                        <span className="reset">
+                        <span className={classnames('reset',{disabled:isResetDisabled})} onClick={reset}>
                             重置
                         </span>
                         <span className="ok" onClick={sure}>
-                            确定    
+                            确定
                         </span>
                     </div>
                     <div className="options">
                         {
-                            optionGroup.map(group => (<Option {...group} key={group.title}/>))
+                            optionGroup.map(group => (<Option {...group} key={group.title} />))
                         }
                         <Slider
                             title="出发时间"
@@ -249,6 +280,24 @@ export default function Bottom(props) {
         setArriveTimeStart
     } = props
 
+    const noChecked = useMemo(()=>{
+        return Object.keys(checkedTicketTypes).length === 0 
+        && Object.keys(checkedTrainTypes).length ===0 
+        && Object.keys(checkedDepartStations).length ===0 
+        && Object.keys(checkedArriveStations).length ===0
+        && departTimeStart ===0
+        && departTimeEnd ===24
+        && arriveTimeStart ===0
+        && arriveTimeEnd === 24
+    },[checkedTicketTypes,
+        checkedTrainTypes,
+        checkedDepartStations,
+        checkedArriveStations,
+        departTimeStart,
+        departTimeEnd,
+        arriveTimeStart,
+        arriveTimeEnd])
+
     return (
         <div className="bottom">
             <div className="bottom-filters">
@@ -264,14 +313,14 @@ export default function Bottom(props) {
                     <i className="icon">{onlyTickets ? '\uf43d' : '\uf43c'}</i>
                     只看有票
                 </span>
-                <span className={classnames('item', { 'item-on': isFiltersVisible })} onClick={toggleIsFilterVisible}>
-                    <i className="icon">{'\uf0f7'}</i>
+                <span className={classnames('item', { 'item-on': isFiltersVisible || !noChecked})} onClick={toggleIsFilterVisible}>
+                    <i className="icon">{noChecked?'\uf0f7':'\uf446  '}</i>
                     综合筛选
                 </span>
             </div>
             {
                 isFiltersVisible && (
-                    <ButtomModal 
+                    <ButtomModal
                         ticketTypes={ticketTypes}
                         trainTypes={trainTypes}
                         departStations={departStations}
