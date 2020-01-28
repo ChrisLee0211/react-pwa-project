@@ -3,6 +3,7 @@ import PropType from 'prop-types';
 import './Bottom.css';
 import { ORDER_DEPART } from './constant';
 import classnames from 'classnames';
+import Slider from './Slider'
 
 const Filter = memo(function Filter(props){
 
@@ -103,6 +104,11 @@ const ButtomModal = memo(function BottomModal(props) {
     const [localCheckedTrainTypes,setLocalCheckedTrainTypes] = useState(()=>{return {...checkedTrainTypes}});
     const [localCheckedDepartStations,setLocalCheckedDepartStations] = useState(()=>{return{...checkedDepartStations}});
     const [localCheckedArriveStations,setLocalCheckedArriveStations] = useState(()=>{return{...checkedArriveStations}});
+    
+    const [localDepartTimeStart, setLocalDepartTimeStart] = useState(departTimeStart);
+    const [localDepartTimeEnd, setLocalDepartTimeEnd] = useState(departTimeEnd);
+    const [localArriveTimeStart, setLocalArriveTimeStart] = useState(arriveTimeStart);
+    const [localArriveTimeEnd, setLocalArriveTimeEnd] = useState(arriveTimeEnd);
 
     const optionGroup = [
         {
@@ -131,6 +137,21 @@ const ButtomModal = memo(function BottomModal(props) {
         }
     ]
 
+    function sure(){
+        setCheckedTicketTypes(localCheckedTicketTypes);
+        setCheckedTrainTypes(localCheckedTrainTypes);
+        setCheckedDepartStations(localCheckedDepartStations);
+        setCheckedArriveStations(localCheckedArriveStations);
+
+        setDepartTimeStart(localDepartTimeStart);
+        setDepartTimeEnd(localDepartTimeEnd);
+
+        setArriveTimeStart(localArriveTimeStart);
+        setArriveTimeEnd(localArriveTimeEnd);
+
+        toggleIsFilterVisible()
+    }
+
     return (
         <div className="bottom-modal">
             <div className="bottom-dialog">
@@ -139,14 +160,28 @@ const ButtomModal = memo(function BottomModal(props) {
                         <span className="reset">
                             重置
                         </span>
-                        <span className="ok">
+                        <span className="ok" onClick={sure}>
                             确定    
                         </span>
                     </div>
                     <div className="options">
                         {
-                            optionGroup.map(group => <Option {...group} key={group.title}/>)
+                            optionGroup.map(group => (<Option {...group} key={group.title}/>))
                         }
+                        <Slider
+                            title="出发时间"
+                            currentStartHours={localDepartTimeStart}
+                            currentEndHours={localDepartTimeEnd}
+                            onStartChanged={setLocalDepartTimeStart}
+                            onEndChanged={setLocalDepartTimeEnd}
+                        />
+                        <Slider
+                            title="到达时间"
+                            currentStartHours={localArriveTimeStart}
+                            currentEndHours={localArriveTimeEnd}
+                            onStartChanged={setLocalArriveTimeStart}
+                            onEndChanged={setLocalArriveTimeEnd}
+                        />
                     </div>
                 </div>
             </div>
