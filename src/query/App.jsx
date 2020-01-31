@@ -190,6 +190,7 @@ function App(props) {
         isNextDisabled={isNextDisabled}
         prev={prev}
         next={next}
+        isQuery={true}
       />
       <List list={trainList} />
       <Bottom

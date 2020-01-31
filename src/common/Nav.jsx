@@ -6,7 +6,7 @@ import 'dayjs/locale/zh-cn';
 import './Nav.css';
 
 const Nav = memo(function Nav(props) {
-    const { date, prev, next, isPrevDisabled, isNextDisabled } = props;
+    const { date, prev, next, isPrevDisabled, isNextDisabled, isQuery } = props;
 
     const currentString = useMemo(() => {
         const d = dayjs(date);
@@ -14,7 +14,7 @@ const Nav = memo(function Nav(props) {
     }, [date]);
 
     return (
-        <div className="nav">
+        <div className={classnames('nav',{'navReset':isQuery})}>
             <span
                 onClick={prev}
                 className={classnames('nav-prev', {

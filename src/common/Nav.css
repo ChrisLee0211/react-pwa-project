@@ -1,14 +1,16 @@
 .nav {
     z-index: 1;
     min-width: 290px;
-    padding: 44px 10px 0 15px;
+    padding: 0px 10px 0 15px;
     line-height: 44px;
     height: 44px;
     background: #f8f8f8;
     text-align: center;
     color: #3cc;
 }
-
+.navReset {
+    padding:44px 10px 0 15px !important; 
+}
 .nav-prev,
 .nav-next {
     float: right;
