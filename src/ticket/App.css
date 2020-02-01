@@ -10,7 +10,12 @@
   right: 0;
   top: 44px;
 }
-
+.detail-wrapper{
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 90px;
+}
 .mask {
   position: fixed;
   z-index: 1000;
