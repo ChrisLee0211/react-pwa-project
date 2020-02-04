@@ -147,6 +147,7 @@ function App(props) {
           {...detailCbs}
         />
       </div>
+      <Candidate tickets={tickets}/>
       {
         isScheduleVisable && 
         <div className="mask" onClick={()=>dispatch(toggleIsScheduleVisible())}>
