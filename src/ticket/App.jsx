@@ -7,6 +7,7 @@ import Nav from '../common/Nav';
 import useNav from '../common/useNav';
 import Detail from '../common/Detail';
 import Candidate from './Candidate';
+import {TrainContext} from './context';
 // import Schedule from './Schedule';
 import {
   setDepartStation,
@@ -147,7 +148,10 @@ function App(props) {
           {...detailCbs}
         />
       </div>
-      <Candidate tickets={tickets}/>
+      <TrainContext.Provider value={{trainNumber,departStation,arriveStation,departDate}}>
+
+        <Candidate tickets={tickets}/>
+      </TrainContext.Provider>
       {
         isScheduleVisable && 
         <div className="mask" onClick={()=>dispatch(toggleIsScheduleVisible())}>
