@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{memo} from 'react';
 import './Ticket.css';
 
 const Ticket = memo(function Ticket(props){

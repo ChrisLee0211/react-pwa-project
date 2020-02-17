@@ -1,4 +1,4 @@
-import React from 'react';
+import React ,{memo}from 'react';
 import './Account.css';
 
 const Account = memo(function Account(props){

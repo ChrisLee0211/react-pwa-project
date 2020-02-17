@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{memo} from 'react';
 import './Choose.css';
 
 const Choose = memo(function Choose(props){
