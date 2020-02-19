@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { connect } from 'react-redux';
 import Header from '../common/Header';
 import Detail from '../common/Detail';
@@ -17,8 +17,11 @@ import {
   setSeatType,
   setDepartDate,
   setSearchParsed,
-  fetchInitial
+  fetchInitial,
+  createAdult,
+  createChild
 } from './actions';
+import { bindActionCreators } from '../../../../../../Library/Caches/typescript/3.5/node_modules/redux';
 
 function App(props) {
   const {
@@ -77,6 +80,12 @@ function App(props) {
 
   },[searchParsed,departStation,arriveStation,seatType,departDate])
 
+  const passengersCbs = useMemo(()=>{
+    return bindActionCreators({
+      createAdult,createChild
+    },dispatch)
+  },[])
+
   if(!searchParsed){
     return null
   }
@@ -100,6 +109,8 @@ function App(props) {
           <span style={{display:'block'}} className="train-icon"></span>
         </Detail>
       </div>
+      <Ticket price={price} type={seatType}/>
+      <Passengers {...passengersCbs} passengers={passengers} />
     </div>
   )
 }
