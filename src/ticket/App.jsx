@@ -7,7 +7,7 @@ import Nav from '../common/Nav';
 import useNav from '../common/useNav';
 import Detail from '../common/Detail';
 import Candidate from './Candidate';
-import {TrainContext} from './context';
+import { TrainContext } from './context';
 // import Schedule from './Schedule';
 import {
   setDepartStation,
@@ -30,7 +30,7 @@ import dayjs from 'dayjs';
 import { h0 } from '../common/fp';
 import { bindActionCreators } from 'redux';
 
-const Schedule = lazy(()=>import('./Schedule'))
+const Schedule = lazy(() => import('./Schedule'))
 
 function App(props) {
   const {
@@ -68,18 +68,18 @@ function App(props) {
     dispatch(setSearchParsed(true))
   }, [])
 
-  useEffect(()=>{
+  useEffect(() => {
     document.title = trainNumber
-  },[trainNumber]);
+  }, [trainNumber]);
 
-  useEffect(()=>{
-    if(!searchParsed){
+  useEffect(() => {
+    if (!searchParsed) {
       return
     }
 
     const url = new URI('/rest/ticket')
-      .setSearch('date',dayjs(departDate).format('YYYY-MM-DD'))
-      .setSearch('trainNumber',trainNumber)
+      .setSearch('date', dayjs(departDate).format('YYYY-MM-DD'))
+      .setSearch('trainNumber', trainNumber)
       .toString();
 
     fetch(url)
@@ -103,20 +103,20 @@ function App(props) {
         dispatch(setDurationStr(durationStr))
         dispatch(setTickets(candidates))
       })
-  },[searchParsed,departDate,trainNumber])
+  }, [searchParsed, departDate, trainNumber])
 
   const {
     isPrevDisabled,
     isNextDisabled,
     prev,
     next
-  } = useNav(departDate,dispatch,prevDate,nextDate)
+  } = useNav(departDate, dispatch, prevDate, nextDate)
 
-  const detailCbs = useMemo(()=>{
+  const detailCbs = useMemo(() => {
     return bindActionCreators({
       toggleIsScheduleVisible
-    },dispatch)
-  },[])
+    }, dispatch)
+  }, [])
 
   if (!searchParsed) {
     return null
@@ -136,7 +136,7 @@ function App(props) {
         />
       </div>
       <div className="detail-wrapper">
-        <Detail 
+        <Detail
           departDate={departDate}
           arriveDate={arriveDate}
           departTimeStr={departTimeStr}
@@ -145,18 +145,21 @@ function App(props) {
           departStation={departStation}
           arriveStation={arriveStation}
           durationStr={durationStr}
-          {...detailCbs}
-        />
+        >
+          <span className="left"></span>
+          <span className="schedule" onClick={() => detailCbs.toggleIsScheduleVisible()}>时刻表</span>
+          <span className="right"></span>
+        </Detail>
       </div>
-      <TrainContext.Provider value={{trainNumber,departStation,arriveStation,departDate}}>
+      <TrainContext.Provider value={{ trainNumber, departStation, arriveStation, departDate }}>
 
-        <Candidate tickets={tickets}/>
+        <Candidate tickets={tickets} />
       </TrainContext.Provider>
       {
-        isScheduleVisable && 
-        <div className="mask" onClick={()=>dispatch(toggleIsScheduleVisible())}>
+        isScheduleVisable &&
+        <div className="mask" onClick={() => dispatch(toggleIsScheduleVisible())}>
           <Suspense fallback={<div>loading</div>}>
-            <Schedule 
+            <Schedule
               date={departDate}
               trainNumber={trainNumber}
               departStation={departStation}
@@ -165,7 +168,7 @@ function App(props) {
           </Suspense>
         </div>
       }
-      
+
     </div>
   )
 }

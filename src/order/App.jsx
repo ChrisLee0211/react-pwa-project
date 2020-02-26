@@ -19,7 +19,9 @@ import {
   setSearchParsed,
   fetchInitial,
   createAdult,
-  createChild
+  createChild,
+  removePassenger,
+  updatePassenger
 } from './actions';
 import { bindActionCreators } from '../../../../../../Library/Caches/typescript/3.5/node_modules/redux';
 
@@ -82,7 +84,7 @@ function App(props) {
 
   const passengersCbs = useMemo(()=>{
     return bindActionCreators({
-      createAdult,createChild
+      createAdult,createChild,removePassenger,updatePassenger
     },dispatch)
   },[])
 
