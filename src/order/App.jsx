@@ -7,6 +7,7 @@ import Account from './Account';
 import Choose from './Choose';
 import Passengers from './Passengers';
 import Ticket from './Ticket';
+import Menu from './Menu';
 import dayjs from 'dayjs'
 import './App.css';
 
@@ -21,7 +22,9 @@ import {
   createAdult,
   createChild,
   removePassenger,
-  updatePassenger
+  updatePassenger,
+  hideMenu,
+  showGenderMenu
 } from './actions';
 import { bindActionCreators } from '../../../../../../Library/Caches/typescript/3.5/node_modules/redux';
 
@@ -84,7 +87,13 @@ function App(props) {
 
   const passengersCbs = useMemo(()=>{
     return bindActionCreators({
-      createAdult,createChild,removePassenger,updatePassenger
+      createAdult,createChild,removePassenger,updatePassenger,showGenderMenu
+    },dispatch)
+  },[])
+
+  const menuCbs = useMemo(()=>{
+    return bindActionCreators({
+      hideMenu,
     },dispatch)
   },[])
 
@@ -113,6 +122,15 @@ function App(props) {
       </div>
       <Ticket price={price} type={seatType}/>
       <Passengers {...passengersCbs} passengers={passengers} />
+      <Menu 
+        show={isMenuVisible}
+        {
+          ...menu
+        }
+        {
+          ...menuCbs
+        }
+      />
     </div>
   )
 }

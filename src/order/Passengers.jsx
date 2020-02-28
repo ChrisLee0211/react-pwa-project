@@ -12,7 +12,8 @@ const Passenger = memo(function Passenger(props) {
         gender,
         birthday,
         onRemove,
-        onUpdate
+        onUpdate,
+        showGenderMenu
     } = props
 
     const isAdult = ticketType === 'adult';
@@ -55,6 +56,7 @@ const Passenger = memo(function Passenger(props) {
                         type="text" 
                         className="input name" 
                         placeholder="请选择" 
+                        onClick={()=>showGenderMenu(id)}
                         value={
                             gender === 'male'?'男':gender === 'female'?'女':''
                         }
@@ -114,7 +116,8 @@ const Passengers = memo(function Passengers(props) {
         createChild,
         createAdult,
         removePassenger,
-        updatePassenger
+        updatePassenger,
+        showGenderMenu
     } = props
 
     return (
@@ -125,6 +128,7 @@ const Passengers = memo(function Passengers(props) {
                         return (
                             <Passenger 
                                 {...passenger} 
+                                showGenderMenu={showGenderMenu}
                                 onRemove={removePassenger} 
                                 onUpdate={updatePassenger}
                                 key={passenger.id} />
@@ -143,7 +147,8 @@ const Passengers = memo(function Passengers(props) {
 Passengers.propTypes = {
     passengers: PropTypes.array.isRequired,
     createChild: PropTypes.func.isRequired,
-    createAdult: PropTypes.func.isRequired,
+    createChild: PropTypes.func.isRequired,
+    showGenderMenu: PropTypes.func.isRequired,
 };
 
 export default Passengers
