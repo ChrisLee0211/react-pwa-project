@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import './Passengers.css';
 
@@ -6,14 +6,16 @@ const Passenger = memo(function Passenger(props) {
     const {
         id,
         name,
-        followAdult,
+        followAdultName,
         ticketType,
         licenceNo,
         gender,
         birthday,
         onRemove,
         onUpdate,
-        showGenderMenu
+        showGenderMenu,
+        showFollowAdultMenu,
+        showTicketTypeMenu,
     } = props
 
     const isAdult = ticketType === 'adult';
@@ -33,7 +35,7 @@ const Passenger = memo(function Passenger(props) {
                         value={name}
                         onChange={(e) => onUpdate(id,{name:e.target.value})}
                         />
-                    <label className="ticket-type">
+                    <label className="ticket-type" onClick={()=>showTicketTypeMenu(id)}>
                         {isAdult? '成人票':'儿童票'}
                     </label>
                 </li>
@@ -76,19 +78,19 @@ const Passenger = memo(function Passenger(props) {
                         />  
                 </li>
                 }
-                { !isAdult &&
-                <li className="item arrow">
-                    <label className="label followAdult">同行成人</label>
-                    <input 
-                        type="text" 
-                        className="input followAdult" 
-                        placeholder="请选择" 
-                        value={followAdult}
-                        readOnly
-                    
-                        />  
-                </li>
-                }
+                {!isAdult && (
+                    <li className="item arrow">
+                        <label className="label followAdult">同行成人</label>
+                        <input
+                            type="text"
+                            className="input followAdult"
+                            placeholder="请选择"
+                            value={followAdultName}
+                            onClick={() => showFollowAdultMenu(id)}
+                            readOnly
+                        />
+                    </li>
+                )}
             </ol>
         </li>
     )
@@ -117,8 +119,20 @@ const Passengers = memo(function Passengers(props) {
         createAdult,
         removePassenger,
         updatePassenger,
-        showGenderMenu
+        showGenderMenu,
+        showFollowAdultMenu,
+        showTicketTypeMenu
     } = props
+
+    const nameMap = useMemo(() => {
+        const ret = {};
+
+        for (const passenger of passengers) {
+            ret[passenger.id] = passenger.name;
+        }
+
+        return ret;
+    }, [passengers]);
 
     return (
         <div className="passengers">
@@ -127,6 +141,9 @@ const Passengers = memo(function Passengers(props) {
                     passengers.map(passenger => {
                         return (
                             <Passenger 
+                            followAdultName={nameMap[passenger.followAdult]}
+                            showTicketTypeMenu={showTicketTypeMenu}
+                            showFollowAdultMenu={showFollowAdultMenu}
                                 {...passenger} 
                                 showGenderMenu={showGenderMenu}
                                 onRemove={removePassenger} 
