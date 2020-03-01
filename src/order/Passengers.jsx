@@ -99,7 +99,6 @@ const Passenger = memo(function Passenger(props) {
 Passenger.propTypes = {
     id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
-    followAdult: PropTypes.number,
     followAdultName: PropTypes.string,
     ticketType: PropTypes.string.isRequired,
     licenceNo: PropTypes.string,
